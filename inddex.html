@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>BINX Competition Dashboard</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: "class"
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .player-row {
+            transition: 0.2s ease;
+        }
+
+        .player-row:hover {
+            transform: translateY(-2px);
+        }
+
+        .blur-name {
+            filter: blur(7px);
+            user-select: none;
+        }
+
+        .reveal-name {
+            filter: blur(0);
+            transition: filter 0.5s ease;
+        }
+
+        .winner-card {
+            animation: revealCard 0.5s ease;
+        }
+
+        @keyframes revealCard {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+
+<body class="bg-slate-100 dark:bg-slate-950 text-slate-900 dark:text-white min-h-screen transition-colors">
+
+
+    <!-- HEADER -->
+
+    <header class="bg-slate-950 dark:bg-black text-white px-6 py-5 shadow-lg">
+
+        <div class="max-w-7xl mx-auto flex justify-between items-center gap-4">
+
+            <div>
+
+                <p class="text-blue-400 text-sm font-bold tracking-widest">
+                    BINX // LIVE COMPETITION
+                </p>
+
+                <h1 class="text-2xl md:text-3xl font-black mt-1">
+                    Competition Dashboard
+                </h1>
+
+                <p class="text-slate-400 text-sm mt-1">
+                    Live Player Ranking System
+                </p>
+
+            </div>
+
+
+            <!-- DARK MODE -->
+
+            <button
+                onclick="toggleDarkMode()"
+                id="themeButton"
+                class="bg-white/10 hover:bg-white/20 border border-white/10 px-4 py-3 rounded-xl text-lg"
+            >
+                🌙
+            </button>
+
+        </div>
+
+    </header>
+
+
+
+    <main class="max-w-7xl mx-auto px-4 py-8">
+
+
+        <!-- ADD PLAYER -->
+
+        <section
+            class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm p-5 mb-6"
+        >
+
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+
+                <div>
+
+                    <h2 class="text-xl font-bold">
+                        Add Contestant
+                    </h2>
+
+                    <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">
+                        Add players before or during the competition.
+                    </p>
+
+                </div>
+
+
+                <div class="flex flex-col sm:flex-row gap-3">
+
+                    <input
+                        id="playerName"
+                        type="text"
+                        placeholder="Contestant name..."
+                        class="border border-slate-300 dark:border-slate-700
+                               bg-white dark:bg-slate-800
+                               text-slate-900 dark:text-white
+                               rounded-xl px-4 py-3
+                               outline-none focus:border-blue-500
+                               min-w-[250px]"
+                    >
+
+
+                    <button
+                        onclick="addPlayer()"
+                        class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-3 rounded-xl"
+                    >
+                        + Add Player
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- RANKING HEADER -->
+
+        <section
+            class="flex flex-col md:flex-row justify-between md:items-center gap-4 mb-5"
+        >
+
+            <div>
+
+                <h2 class="text-2xl font-black">
+                    Live Ranking
+                </h2>
+
+                <p class="text-slate-500 dark:text-slate-400 text-sm">
+                    <span id="playerCount">0</span> contestants
+                    <span class="mx-2">•</span>
+                    <span class="text-green-600 font-bold">● Live Database</span>
+                </p>
+
+            </div>
+
+
+            <div class="flex flex-wrap gap-2">
+
+                <button
+                    onclick="showTopFive()"
+                    class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-5 py-3 rounded-xl"
+                >
+                    🏆 Top 5
+                </button>
+
+
+                <button
+                    onclick="deleteAllPlayers()"
+                    class="bg-red-600 hover:bg-red-700 text-white font-bold px-5 py-3 rounded-xl"
+                >
+                    🗑 Delete All
+                </button>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- PLAYERS -->
+
+        <section
+            id="playersContainer"
+            class="space-y-3"
+        >
+        </section>
+
+
+    </main>
+
+
+
+    <!-- TOP 5 MODAL -->
+
+    <div
+        id="topFiveModal"
+        class="hidden fixed inset-0 bg-black/75 backdrop-blur-sm
+               flex items-center justify-center p-4 z-50"
+    >
+
+        <div
+            class="bg-white dark:bg-slate-900
+                   rounded-3xl w-full max-w-5xl
+                   shadow-2xl p-6"
+        >
+
+
+            <!-- TOP HEADER -->
+
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+
+                <div>
+
+                    <p class="text-blue-600 font-bold text-sm tracking-widest">
+                        BINX // LEADERBOARD
+                    </p>
+
+                    <h2 class="text-3xl font-black mt-1">
+                        🏆 TOP 5
+                    </h2>
+
+                    <p class="text-slate-500 dark:text-slate-400 text-sm">
+                        Reveal the winners one by one
+                    </p>
+
+                </div>
+
+
+                <!-- CLOSE -->
+
+                <button
+                    onclick="closeTopFive()"
+                    class="w-10 h-10 rounded-xl
+                           bg-slate-100 dark:bg-slate-800
+                           text-slate-500 dark:text-slate-300
+                           hover:bg-red-100 hover:text-red-600
+                           text-2xl"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+
+            <!-- CONTROLS -->
+
+            <div
+                class="flex flex-wrap items-center justify-between gap-3
+                       bg-slate-100 dark:bg-slate-800
+                       rounded-2xl p-3 mb-6"
+            >
+
+
+                <!-- VIEW -->
+
+                <div class="flex gap-2">
+
+                    <button
+                        id="verticalViewBtn"
+                        onclick="setTopFiveView('vertical')"
+                        class="bg-blue-600 text-white font-bold px-4 py-2 rounded-lg"
+                    >
+                        ☷ Vertical
+                    </button>
+
+
+                    <button
+                        id="horizontalViewBtn"
+                        onclick="setTopFiveView('horizontal')"
+                        class="bg-white dark:bg-slate-700
+                               text-slate-700 dark:text-white
+                               font-bold px-4 py-2 rounded-lg"
+                    >
+                        ▦ Side by Side
+                    </button>
+
+                </div>
+
+
+                <!-- REVEAL -->
+
+                <div class="flex gap-2">
+
+                    <button
+                        onclick="revealNext()"
+                        class="bg-blue-600 hover:bg-blue-700
+                               text-white font-bold
+                               px-4 py-2 rounded-lg"
+                    >
+                        👁 Reveal Next
+                    </button>
+
+
+                    <button
+                        onclick="revealAll()"
+                        class="bg-slate-950 hover:bg-slate-800
+                               dark:bg-white dark:text-slate-950
+                               text-white font-bold
+                               px-4 py-2 rounded-lg"
+                    >
+                        Reveal All
+                    </button>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- TOP FIVE -->
+
+            <div
+                id="topFiveContainer"
+                class="space-y-3"
+            >
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+    const SUPABASE_URL = "https://cuodjqzminywupbzyekr.supabase.co"; 
+    const SUPABASE_KEY = "sb_publishable_PGp-dZJUCF2w5Hqxc9atZg_tIy435lX"; 
+ 
+    // استخدام supabaseClient لمنع التعارض مع العميل الرئيسي
+    const supabaseClient = window.supabase.createClient( 
+        SUPABASE_URL, 
+        SUPABASE_KEY 
+    ); 
+</script> 
+<script> 
+ 
+// ===================================================== 
+// DATA 
+// ===================================================== 
+
+    let players = []; 
+ 
+async function loadPlayers() { 
+    const { data, error } = await supabaseClient 
+        .from("players") 
+        .select("*") 
+        .order("score", { 
+            ascending: false 
+        }); 
+ 
+    if (error) { 
+        console.error("Error loading players:", error); 
+        return; 
+    } 
+ 
+    players = data || []; 
+    renderPlayers(); 
+} 
+
+loadPlayers(); 
+
+// ===================================================== 
+// DARK MODE 
+// ===================================================== 
+ 
+let darkMode = localStorage.getItem("binxDarkMode") === "true"; 
+ 
+function applyDarkMode() { 
+    const html = document.documentElement; 
+    const button = document.getElementById("themeButton"); 
+ 
+    if (darkMode) { 
+        html.classList.add("dark"); 
+        button.textContent = "☀️"; 
+    } else { 
+        html.classList.remove("dark"); 
+        button.textContent = "🌙"; 
+    } 
+} 
+ 
+function toggleDarkMode() { 
+    darkMode = !darkMode; 
+    localStorage.setItem("binxDarkMode", darkMode); 
+    applyDarkMode(); 
+} 
+ 
+// ===================================================== 
+// ADD PLAYER 
+// ===================================================== 
+ 
+async function addPlayer() { 
+    const input = document.getElementById("playerName"); 
+    const name = input.value.trim(); 
+ 
+    if (!name) return; 
+ 
+    const { error } = await supabaseClient 
+        .from("players") 
+        .insert([{ 
+            name: name, 
+            score: 0 
+        }]); 
+ 
+    if (error) { 
+        console.error("Error adding player:", error); 
+        alert("Error adding player. Check RLS Policies in Supabase."); 
+        return; 
+    } 
+ 
+    input.value = ""; 
+    await loadPlayers(); 
+} 
+
+// ===================================================== 
+// CHANGE SCORE 
+// ===================================================== 
+ 
+async function changeScore(id, amount) { 
+    const player = players.find(p => p.id === id); 
+ 
+    if (!player) return; 
+ 
+    const newScore = player.score + amount; 
+ 
+    const { error } = await supabaseClient 
+        .from("players") 
+        .update({ 
+            score: newScore 
+        }) 
+        .eq("id", id); 
+ 
+    if (error) { 
+        console.error("Error updating score:", error); 
+        return; 
+    } 
+ 
+    await loadPlayers(); 
+} 
+
+// REALTIME SUBSCRIPTION
+supabaseClient 
+    .channel("players-changes") 
+    .on( 
+        "postgres_changes", 
+        { 
+            event: "*", 
+            schema: "public", 
+            table: "players" 
+        }, 
+        () => { 
+            loadPlayers(); 
+        } 
+    ) 
+    .subscribe((status) => { 
+        console.log("Realtime status:", status); 
+    }); 
+ 
+// ===================================================== 
+// DELETE PLAYER 
+// ===================================================== 
+ 
+async function deletePlayer(id) { 
+    const player = players.find(p => p.id === id); 
+ 
+    if (!player) return; 
+ 
+    const confirmed = confirm(`Delete ${player.name}?`); 
+ 
+    if (!confirmed) return; 
+ 
+    const { error } = await supabaseClient 
+        .from("players") 
+        .delete() 
+        .eq("id", id); 
+ 
+    if (error) { 
+        console.error("Error deleting player:", error); 
+        alert("Error deleting player"); 
+        return; 
+    } 
+ 
+    await loadPlayers(); 
+} 
+ 
+// ===================================================== 
+// DELETE ALL 
+// ===================================================== 
+ 
+async function deleteAllPlayers() { 
+    if (players.length === 0) { 
+        alert("There are no players."); 
+        return; 
+    } 
+ 
+    const confirmed = confirm("Are you sure you want to delete ALL players and scores?"); 
+ 
+    if (!confirmed) return; 
+ 
+    const { error } = await supabaseClient 
+        .from("players") 
+        .delete() 
+        .neq("id", 0); 
+ 
+    if (error) { 
+        console.error("Error deleting all players:", error); 
+        alert("Error deleting all players"); 
+        return; 
+    } 
+ 
+    await loadPlayers(); 
+} 
+ 
+// ===================================================== 
+// RENDER PLAYERS 
+// ===================================================== 
+ 
+function renderPlayers() { 
+    const container = document.getElementById("playersContainer"); 
+ 
+    const sortedPlayers = [...players].sort((a, b) => b.score - a.score); 
+ 
+    document.getElementById("playerCount").textContent = players.length; 
+ 
+    container.innerHTML = ""; 
+ 
+    if (sortedPlayers.length === 0) { 
+        container.innerHTML = ` 
+            <div class="bg-white dark:bg-slate-900 rounded-2xl p-12 text-center"> 
+                <div class="text-5xl mb-4">👥</div> 
+                <h3 class="text-xl font-bold">No players yet</h3> 
+                <p class="text-slate-500 dark:text-slate-400 mt-2"> 
+                    Add contestants to start the competition. 
+                </p> 
+            </div> 
+        `; 
+        return; 
+    } 
+ 
+    sortedPlayers.forEach((player, index) => { 
+        const rank = index + 1; 
+ 
+        let rankStyle = "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300"; 
+ 
+        if (rank === 1) rankStyle = "bg-yellow-100 text-yellow-700"; 
+        if (rank === 2) rankStyle = "bg-slate-200 text-slate-700"; 
+        if (rank === 3) rankStyle = "bg-orange-100 text-orange-700"; 
+ 
+        const row = document.createElement("div"); 
+        row.className = "player-row bg-white dark:bg-slate-900 rounded-2xl shadow-sm p-4"; 
+ 
+        row.innerHTML = ` 
+            <div class="flex flex-col xl:flex-row xl:items-center gap-4"> 
+                <!-- RANK --> 
+                <div class="w-14 h-14 rounded-2xl ${rankStyle} flex items-center justify-center font-black text-xl shrink-0"> 
+                    ${rank} 
+                </div> 
+
+                <!-- NAME --> 
+                <div class="flex-1 min-w-[150px]"> 
+                    <h3 class="font-black text-xl"> 
+                        ${escapeHTML(player.name)} 
+                    </h3> 
+                    <p class="text-sm text-slate-400"> 
+                        Rank #${rank} 
+                    </p> 
+                </div> 
+
+                <!-- SCORE --> 
+                <div class="text-center min-w-[110px]"> 
+                    <p class="text-3xl font-black text-blue-600"> 
+                        ${player.score} 
+                    </p> 
+                    <p class="text-xs text-slate-400 font-bold"> 
+                        POINTS 
+                    </p> 
+                </div> 
+
+                <!-- BUTTONS --> 
+                <div class="flex flex-wrap justify-center gap-2 max-w-[430px]"> 
+                    <button onclick="changeScore(${player.id}, 10)" class="bg-green-100 hover:bg-green-200 text-green-700 font-bold px-3 py-2 rounded-lg">+10</button> 
+                    <button onclick="changeScore(${player.id}, 20)" class="bg-green-100 hover:bg-green-200 text-green-700 font-bold px-3 py-2 rounded-lg">+20</button> 
+                    <button onclick="changeScore(${player.id}, 30)" class="bg-green-100 hover:bg-green-200 text-green-700 font-bold px-3 py-2 rounded-lg">+30</button> 
+                    <button onclick="changeScore(${player.id}, 40)" class="bg-green-100 hover:bg-green-200 text-green-700 font-bold px-3 py-2 rounded-lg">+40</button> 
+                    <button onclick="changeScore(${player.id}, 50)" class="bg-green-100 hover:bg-green-200 text-green-700 font-bold px-3 py-2 rounded-lg">+50</button> 
+
+                    <button onclick="changeScore(${player.id}, -10)" class="bg-red-100 hover:bg-red-200 text-red-700 font-bold px-3 py-2 rounded-lg">-10</button> 
+                    <button onclick="changeScore(${player.id}, -20)" class="bg-red-100 hover:bg-red-200 text-red-700 font-bold px-3 py-2 rounded-lg">-20</button> 
+                    <button onclick="changeScore(${player.id}, -30)" class="bg-red-100 hover:bg-red-200 text-red-700 font-bold px-3 py-2 rounded-lg">-30</button> 
+                    <button onclick="changeScore(${player.id}, -40)" class="bg-red-100 hover:bg-red-200 text-red-700 font-bold px-3 py-2 rounded-lg">-40</button> 
+                    <button onclick="changeScore(${player.id}, -50)" class="bg-red-100 hover:bg-red-200 text-red-700 font-bold px-3 py-2 rounded-lg">-50</button> 
+                </div> 
+
+                <!-- DELETE --> 
+                <button 
+                    onclick="deletePlayer(${player.id})" 
+                    class="bg-slate-100 dark:bg-slate-800 hover:bg-red-100 text-slate-500 hover:text-red-600 font-bold px-4 py-2 rounded-lg" 
+                > 
+                    🗑 Delete 
+                </button> 
+            </div> 
+        `; 
+
+        container.appendChild(row); 
+    }); 
+} 
+ 
+// ===================================================== 
+// TOP 5 VARIABLES 
+// ===================================================== 
+ 
+let topFivePlayers = []; 
+let revealedCount = 0; 
+let topFiveView = localStorage.getItem("binxTopFiveView") || "vertical"; 
+ 
+// ===================================================== 
+// SHOW TOP 5 
+// ===================================================== 
+ 
+function showTopFive() { 
+    topFivePlayers = [...players] 
+        .sort((a, b) => b.score - a.score) 
+        .slice(0, 5); 
+
+    revealedCount = 0; 
+    renderTopFive(); 
+    document.getElementById("topFiveModal").classList.remove("hidden"); 
+} 
+ 
+// ===================================================== 
+// RENDER TOP 5 
+// ===================================================== 
+ 
+function renderTopFive() { 
+    const container = document.getElementById("topFiveContainer"); 
+
+    container.className = topFiveView === "vertical" 
+        ? "space-y-3" 
+        : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3"; 
+
+    container.innerHTML = ""; 
+
+    topFivePlayers.forEach((player, index) => { 
+        const rank = index + 1; 
+
+        let medal = "🏅"; 
+        if (rank === 1) medal = "🥇"; 
+        if (rank === 2) medal = "🥈"; 
+        if (rank === 3) medal = "🥉"; 
+
+        const revealed = index < revealedCount; 
+
+        const card = document.createElement("div"); 
+
+        card.className = topFiveView === "vertical" 
+            ? `flex items-center gap-4 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800 ${rank === 1 ? "border-2 border-yellow-400" : ""}` 
+            : `winner-card flex flex-col items-center text-center p-5 rounded-2xl bg-slate-50 dark:bg-slate-800 ${rank === 1 ? "border-2 border-yellow-400" : ""}`; 
+
+        card.innerHTML = ` 
+            <!-- MEDAL --> 
+            <div class="text-3xl ${topFiveView === "vertical" ? "w-12" : ""}"> 
+                ${medal} 
+            </div> 
+
+            <!-- RANK --> 
+            <div class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center font-black shrink-0"> 
+                ${rank} 
+            </div> 
+
+            <!-- NAME --> 
+            <div class="${topFiveView === "vertical" ? "flex-1" : "mt-3"}"> 
+                <p class="font-black text-lg ${revealed ? "reveal-name" : "blur-name"}"> 
+                    ${escapeHTML(player.name)} 
+                </p> 
+                <p class="text-xs text-slate-400"> 
+                    Rank #${rank} 
+                </p> 
+            </div> 
+
+            <!-- SCORE --> 
+            <div class="text-2xl font-black text-blue-600 ${topFiveView === "vertical" ? "" : "mt-3"}"> 
+                ${player.score} 
+                <span class="text-xs text-slate-400">pts</span> 
+            </div> 
+        `; 
+
+        container.appendChild(card); 
+    }); 
+} 
+ 
+// ===================================================== 
+// REVEAL NEXT / ALL 
+// ===================================================== 
+ 
+function revealNext() { 
+    if (revealedCount >= topFivePlayers.length) return; 
+    revealedCount++; 
+    renderTopFive(); 
+} 
+ 
+function revealAll() { 
+    revealedCount = topFivePlayers.length; 
+    renderTopFive(); 
+} 
+ 
+// ===================================================== 
+// CHANGE TOP 5 VIEW 
+// ===================================================== 
+ 
+function setTopFiveView(view) { 
+    topFiveView = view; 
+    localStorage.setItem("binxTopFiveView", view); 
+    updateViewButtons(); 
+    renderTopFive(); 
+} 
+ 
+function updateViewButtons() { 
+    const vertical = document.getElementById("verticalViewBtn"); 
+    const horizontal = document.getElementById("horizontalViewBtn"); 
+
+    if (topFiveView === "vertical") { 
+        vertical.className = "bg-blue-600 text-white font-bold px-4 py-2 rounded-lg"; 
+        horizontal.className = "bg-white dark:bg-slate-700 text-slate-700 dark:text-white font-bold px-4 py-2 rounded-lg"; 
+    } else { 
+        horizontal.className = "bg-blue-600 text-white font-bold px-4 py-2 rounded-lg"; 
+        vertical.className = "bg-white dark:bg-slate-700 text-slate-700 dark:text-white font-bold px-4 py-2 rounded-lg"; 
+    } 
+} 
+ 
+function closeTopFive() { 
+    document.getElementById("topFiveModal").classList.add("hidden"); 
+} 
+ 
+// ===================================================== 
+// ESCAPE HTML 
+// ===================================================== 
+ 
+function escapeHTML(text) { 
+    const div = document.createElement("div"); 
+    div.textContent = text; 
+    return div.innerHTML; 
+} 
+ 
+// ===================================================== 
+// ENTER TO ADD 
+// ===================================================== 
+ 
+document.getElementById("playerName").addEventListener("keydown", function(event) { 
+    if (event.key === "Enter") { 
+        addPlayer(); 
+    } 
+}); 
+ 
+// ===================================================== 
+// INITIALIZE 
+// ===================================================== 
+ 
+applyDarkMode(); 
+updateViewButtons(); 
+</script> 
+
+</body> 
+</html>

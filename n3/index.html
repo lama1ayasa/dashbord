@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Digital Hunt | Image Investigation</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .glow {
+            box-shadow: 0 0 30px rgba(34, 211, 238, 0.12);
+        }
+
+        .grid-bg {
+            background-image:
+                linear-gradient(rgba(34, 211, 238, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(34, 211, 238, 0.04) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+    </style>
+</head>
+
+
+<body class="min-h-screen bg-slate-950 text-white grid-bg">
+
+
+    <!-- HEADER -->
+
+    <header class="border-b border-cyan-400/20 bg-slate-950/90">
+
+        <div class="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
+
+            <div>
+
+                <p class="text-cyan-400 text-xs tracking-[0.3em]">
+                    BINX // DIGITAL HUNT
+                </p>
+
+                <h1 class="text-2xl md:text-3xl font-black mt-1">
+                    IMAGE INVESTIGATION
+                </h1>
+
+            </div>
+
+
+            <div class="text-left">
+
+                <p class="text-xs text-slate-500">
+                    CHALLENGE
+                </p>
+
+                <p class="text-cyan-400 font-bold text-lg">
+                    01
+                </p>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- MAIN -->
+
+    <main class="max-w-6xl mx-auto px-6 py-10">
+
+        <div class="grid lg:grid-cols-2 gap-8">
+
+
+            <!-- IMAGE -->
+
+            <section>
+
+                <div class="bg-slate-900/80
+                            border border-slate-800
+                            rounded-3xl
+                            p-5
+                            glow">
+
+
+                    <div class="flex justify-between items-center mb-4">
+
+
+                        <span class="text-xs text-emerald-400
+                                     border border-emerald-400/30
+                                     bg-emerald-400/10
+                                     px-3 py-1
+                                     rounded-full">
+
+                            ● ACTIVE
+
+                        </span>
+
+
+                        <span class="text-xs text-slate-500">
+
+                            ORIGINAL FILE
+
+                        </span>
+
+
+                    </div>
+
+
+
+                    <!-- IMAGE -->
+
+                    <div class="bg-black
+                                rounded-2xl
+                                overflow-hidden
+                                border border-slate-800">
+
+                        <img
+                            id="challengeImage"
+                            src="ljpg.jpg"
+                            class="w-full h-[420px] object-contain"
+                            alt="Challenge Image"
+                        >
+
+                    </div>
+
+
+
+                    <!-- DOWNLOAD -->
+
+                    <a
+                        id="downloadButton"
+                        href="ljpg.jpg"
+                        download
+                        class="mt-5
+                               block
+                               text-center
+                               bg-cyan-400
+                               hover:bg-cyan-300
+                               text-slate-950
+                               font-black
+                               rounded-xl
+                               py-4
+                               transition"
+                    >
+
+                        ↓ &nbsp; DOWNLOAD IMAGE
+
+                    </a>
+
+                </div>
+
+            </section>
+
+
+
+
+            <!-- GAME -->
+
+            <section class="space-y-5">
+
+
+                <!-- MISSION -->
+
+                <div class="bg-slate-900/80
+                            border border-slate-800
+                            rounded-3xl
+                            p-7
+                            glow">
+
+
+                    <p class="text-cyan-400
+                              text-xs
+                              tracking-[0.3em]
+                              mb-3">
+
+                        MISSION
+
+                    </p>
+
+
+                    <h2 class="text-2xl
+                               font-black
+                               mb-4">
+
+                        Find the hidden key.
+
+                    </h2>
+
+
+                    <p class="text-slate-300
+                              leading-8">
+
+                        حمّل الصورة وافحص واحدة من خصائصها.
+                        لا تعتمد على شكل الصورة فقط.
+
+                    </p>
+
+                </div>
+
+
+
+
+                <!-- HINT -->
+
+                <div class="bg-slate-900/80
+                            border border-amber-400/20
+                            rounded-3xl
+                            p-7">
+
+
+                    <div class="flex justify-between items-center">
+
+
+                        <p class="text-amber-400
+                                  text-xs
+                                  tracking-[0.3em]">
+
+                            HINT
+
+                        </p>
+
+
+                        <span
+                            id="hintNumber"
+                            class="text-xs text-slate-500">
+
+                            HINT 01
+
+                        </span>
+
+                    </div>
+
+
+
+                    <p
+                        id="hintText"
+                        class="text-slate-200
+                               leading-8
+                               mt-4">
+
+                        أول خطوة ركز ع خصائص الصورة
+                        وخصوصاً الأرقام.
+
+                    </p>
+
+
+
+                    <button
+                        id="nextHint"
+                        class="mt-5
+                               border border-slate-700
+                               hover:border-cyan-400
+                               hover:text-cyan-400
+                               px-5 py-3
+                               rounded-xl
+                               text-sm
+                               transition"
+                    >
+
+                        SHOW NEXT HINT
+
+                    </button>
+
+                </div>
+
+
+
+
+                <!-- KEY -->
+
+                <div class="bg-slate-900/80
+                            border border-slate-800
+                            rounded-3xl
+                            p-7">
+
+
+                    <label
+                        class="block
+                               text-xs
+                               tracking-[0.3em]
+                               text-slate-400
+                               mb-3">
+
+                        ENTER KEY
+
+                    </label>
+
+
+
+                    <div class="flex gap-3">
+
+
+                        <input
+                            id="keyInput"
+                            type="text"
+                            placeholder="اكتب الـ KEY..."
+                            class="flex-1
+                                   min-w-0
+                                   bg-slate-950
+                                   border border-slate-700
+                                   focus:border-cyan-400
+                                   outline-none
+                                   rounded-xl
+                                   px-5 py-4
+                                   text-white"
+                        >
+
+
+
+                        <button
+                            id="submitButton"
+                            class="bg-white
+                                   hover:bg-cyan-300
+                                   text-slate-950
+                                   font-black
+                                   px-6
+                                   rounded-xl
+                                   transition"
+                        >
+
+                            SUBMIT
+
+                        </button>
+
+                    </div>
+
+
+
+                    <p
+                        id="feedback"
+                        class="mt-4
+                               text-sm
+                               min-h-[24px]">
+
+                    </p>
+
+                </div>
+
+
+
+
+                <!-- GOOGLE MEET -->
+
+                <div class="text-center">
+
+                    <p class="text-xs
+                              text-slate-500
+                              leading-6">
+
+                        لقيت الـKEY؟
+                        <span class="text-cyan-400">
+                            ارفع إيدك أول على Google Meet
+                        </span>
+                        قبل ما تبعث الإجابة.
+
+                    </p>
+
+                </div>
+
+
+            </section>
+
+        </div>
+
+    </main>
+
+
+
+    <script>
+
+
+        /*
+        ========================================
+        CHALLENGE
+        ========================================
+        */
+
+        const challenge = {
+
+            image: "ljpg.jpg",
+
+            hints: [
+
+                "أول خطوة ركز ع خصائص الصورة وخصوصاً الأرقام.",
+
+                "الـKEY هو رقم من 4 منازل، والمنزلة الثانية والثالثة زي بعض."
+
+            ],
+
+            answer: "1440"
+
+        };
+
+
+
+        /*
+        ========================================
+        VARIABLES
+        ========================================
+        */
+
+        let currentHint = 0;
+
+
+
+        /*
+        ========================================
+        ELEMENTS
+        ========================================
+        */
+
+        const hintText =
+            document.getElementById("hintText");
+
+        const hintNumber =
+            document.getElementById("hintNumber");
+
+        const nextHint =
+            document.getElementById("nextHint");
+
+        const keyInput =
+            document.getElementById("keyInput");
+
+        const submitButton =
+            document.getElementById("submitButton");
+
+        const feedback =
+            document.getElementById("feedback");
+
+
+
+        /*
+        ========================================
+        NEXT HINT
+        ========================================
+        */
+
+        nextHint.addEventListener("click", function () {
+
+
+            if (currentHint <
+                challenge.hints.length - 1) {
+
+
+                currentHint++;
+
+
+                hintText.textContent =
+                    challenge.hints[currentHint];
+
+
+                hintNumber.textContent =
+                    "HINT "
+                    +
+                    String(currentHint + 1)
+                        .padStart(2, "0");
+
+
+
+                if (currentHint ===
+                    challenge.hints.length - 1) {
+
+
+                    nextHint.textContent =
+                        "ALL HINTS SHOWN";
+
+
+                    nextHint.disabled =
+                        true;
+
+                }
+
+            }
+
+        });
+
+
+
+        /*
+        ========================================
+        CHECK KEY
+        ========================================
+        */
+
+        function checkAnswer() {
+
+
+            const answer =
+                keyInput.value.trim();
+
+
+
+            if (answer === "") {
+
+
+                feedback.textContent =
+                    "اكتب الـKEY أولاً.";
+
+
+                feedback.className =
+                    "mt-4 text-sm text-amber-400";
+
+
+                return;
+
+            }
+
+
+
+            if (answer === challenge.answer) {
+
+
+                feedback.textContent =
+                    "✓ صحيح! تم العثور على الـKEY 🔓";
+
+
+                feedback.className =
+                    "mt-4 text-sm text-emerald-400 font-bold";
+
+
+                keyInput.disabled =
+                    true;
+
+
+                submitButton.disabled =
+                    true;
+
+
+                nextHint.disabled =
+                    true;
+
+            }
+
+
+            else {
+
+
+                feedback.textContent =
+                    "✕ الإجابة غير صحيحة. افحص الصورة مرة ثانية.";
+
+
+                feedback.className =
+                    "mt-4 text-sm text-red-400";
+
+            }
+
+        }
+
+
+
+        /*
+        ========================================
+        SUBMIT
+        ========================================
+        */
+
+        submitButton.addEventListener(
+            "click",
+            checkAnswer
+        );
+
+
+
+        keyInput.addEventListener(
+            "keydown",
+            function(event) {
+
+                if (event.key === "Enter") {
+
+                    checkAnswer();
+
+                }
+
+            }
+        );
+
+
+    </script>
+
+
+</body>
+
+</html>
